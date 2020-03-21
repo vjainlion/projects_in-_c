@@ -1,0 +1,191 @@
+#include <stdio.h>
+#include <conio.h>
+
+
+int fruitx,fruity,x,y,temp;
+int score,gameover;
+int height = 20;
+int width = 20;
+int tailX[100];
+int tailY[100];
+int tailCount = 0;
+void setup()
+{
+    score = 0;
+    gameover = 0;
+    x = height/2;
+    y = width/2;
+
+    srand(time(0));
+    fruitx  = rand()%18+1;
+    fruity  = rand()%18 + 1;
+
+
+}
+void input()
+{
+
+
+    if(kbhit())
+    {
+        switch(getch())
+        {
+        case 'a':
+            temp=1;
+            break;
+        case 's':
+            temp = 2;
+            break;
+
+        case 'w':
+            temp = 3;
+            break;
+
+        case 'z':
+            temp = 4;
+            break;
+
+        case 'x':
+            gameover = 1;
+            break;
+        }
+    }
+
+}
+
+void makeLogic()
+{
+
+     int currX,currY;
+    int prevX,prevY;
+
+    currX = tailX[0];
+    currY  = tailY[0];
+    tailX[0] = x;
+    tailY[0] = y;
+
+    int curr1X;
+    int curr1Y;
+    for(int i=1;i<tailCount;i++)
+    {
+         curr1X = tailX[i];
+         curr1Y = tailY[i];
+        tailX[i] =  currX;
+        tailY[i] = currY;
+
+        currX = curr1X;
+        currY = curr1Y;
+
+    }
+    switch(temp)
+    {
+    case 1:
+        y--;
+        break;
+    case 2:
+        y++;
+        break;
+    case 3:
+        x--;
+        break;
+    case 4:
+        x++;
+    default:
+        break;
+
+
+    }
+
+     if(x<=0 || x>=width || y<=0 || y>=height)
+     {
+         gameover = 1;
+         printf("GAME OVER!!\n");
+         printf("TOTAL SCORE: %d\n",score);
+     }
+    if(x==fruitx && y==fruity)
+    {
+        score = score + 10;
+          srand(time(0));
+    fruitx  = rand()%18+1;
+    fruity  = rand()%18 + 1;
+    tailCount++;
+    }
+
+    for(int j=0;j<tailCount;j++)
+    {
+        if(x==tailX[j] && y==tailY[j])
+        {
+            gameover = 1;
+            printf("GAME OVER!!\n");
+             printf("TOTAL SCORE: %d\n",score);
+
+        }
+    }
+}
+void display()
+{
+
+    system("cls");
+    int i,j;
+    for(i=0;i<width;i++)
+    {
+
+     for(j=0;j<height;j++)
+     {
+         if(i==0 || i==(height-1) || j==0 || j==(width-1))
+            printf("*");
+         else
+         {
+             if(i==x && j==y)
+                printf("O");
+              else if(i==fruitx && j==fruity)
+                printf("F");
+              else
+              {
+                  int temp =  0;
+                  for(int k=0;k<tailCount;k++)
+                  {
+                      if(i==tailX[k] && j==tailY[k])
+                      {
+                          printf("o");;
+                            temp  =1;
+                      }
+
+                  }
+                  if(temp==0)
+                  {
+                      printf(" ");
+                  }
+
+              }
+
+         }
+
+     }
+     printf("\n");
+    }
+}
+int main()
+{
+    int i;
+  char ch;
+    label:
+    setup();
+    while(!gameover)
+    {
+        display();
+        input();
+        makeLogic();
+        for(i=0;i<1000000;i++)
+        {
+
+        }
+    }
+      printf("Press Y/y to play again else press anything.");
+
+    scanf("%c",&ch);
+    if(ch=='Y' || ch=='y')
+        goto label;
+
+    return 0;
+}
